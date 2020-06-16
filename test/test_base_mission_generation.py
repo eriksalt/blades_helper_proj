@@ -3,11 +3,6 @@ import test.mock_data_gateway
 from blades_helper.mission_generator import _get_next_mission_type, _can_use_mission_type, _generate_base_missions
 from blades_helper.mission_generator_constants import MissionGeneratorConstants as con
 
-#from test.mock_data_gateway import MockDataGateway
-#from blades_helper.constants import MissionGeneratorConstants as con
-#from blades_helper.mission_generator import _get_next_mission_type
-
-
 def setup_one_mission_base_build(mock, note, type):
     mock.mission_counts.append((1, note))
     mock.mission_types.append(type)
