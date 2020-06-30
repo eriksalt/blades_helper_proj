@@ -74,10 +74,13 @@ class MissionGeneratorConstants:
     RELIGIOUS_TARGET_BONE_WASTES='the Bone Wastes'
     RELIGIOUS_TARGET_ANDRASTUS='the Principalities of Andrastus'
 
+    LAY_TRAP= 'This mission represents the spymaster springing a trap for a lieutenant or infamous of a Broken'
+    AUGMENTED_GM_FOCUS='The spymaster has augmented this mission'
+
     #Output text
     FAVOR_NOTE = "Mission has favor of type {}"
     HAS_DANGER_NOTE = "Mission is especially dangerous.  Consider adding a lieutenant or elite"
-    ADDITIONAL_SPECIALIST_NOTE = "Mission requires a {} in addition to any other requirements. Mission can include one additional specialist"
+    ADDITIONAL_SPECIALIST_NOTE = "Mission can include one additional specialist"
     CULTURE_USE_NOTE='Consider setting in the context of {}'
 
     #Generral Data Tables
@@ -116,6 +119,14 @@ class MissionGeneratorConstants:
         OFFICER, 
         ALCHEMIST_OR_MERCY
         ]
+
+    required_assault_specialists = f'One {HEAVY}, {MEDIC} or {SNIPER}'
+
+    required_supply_specialists = f'One {HEAVY},{OFFICER} or {SCOUT}'
+
+    required_recon_specialists = f'One {SCOUT} or {SNIPER}'
+
+    required_religious_specialists = f'One {OFFICER} or {MEDIC}'
 
     #Assault data tables
     assault_targets = [

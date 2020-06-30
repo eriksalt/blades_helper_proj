@@ -24,20 +24,25 @@ def check_for_note(mission, note_to_find):
             return
     assert False
 
+def check_requirement(mission, specialist):
+    return specialist in mission.requirements
+
 def check_for_note_plus_one_specialist(mission, specialist):
     check_for_note(mission, "Mission can include one additional specialist")
-    check_for_note(mission, specialist)
+    check_requirement(mission, specialist)
 
 def check_for_note_favor(mission, favor_type):
     check_for_note(mission, con.FAVOR_NOTE[0:-3])
     check_for_note(mission, favor_type)
 
-def check_mission(mission, mission_type, target, rewards, penalties, notes_len, contained_notes):
+def check_mission(mission, mission_type, target, rewards, penalties, notes_len, requirement, contained_notes):
     check_mission_type(mission, mission_type)
     assert mission.target == target
     check_array(mission.rewards, rewards)
     check_array(mission.penalties, penalties)
     check_note_len(mission, notes_len)
+    if not requirement == con.NOTHING:
+        check_requirement(mission, requirement)
     for contained_note in contained_notes:
         check_for_note(mission, contained_note)
  
@@ -66,45 +71,44 @@ def test_make_one_mission():
     mock = test.mock_data_gateway.MockDataGateway()
     mock.titles.append('bunker hill')
     setup_one_mission_base_build(mock, con.NOTHING, con.RELIGIOUS)
-    missions =_generate_base_missions(mock, False, con.SUPPLY, con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT, con.RECON] )
+    missions =_generate_base_missions(mock, False, False, False,  con.SUPPLY, con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT, con.RECON] )
     assert len(missions)==1
     mission = missions[0]
-    check_mission(mission, con.RELIGIOUS, con.NOTHING, [], [], 0, [])
+    check_mission(mission, con.RELIGIOUS, con.NOTHING, [], [], 0, con.required_religious_specialists, [])
 
 def test_one_has_favor():
     mock = test.mock_data_gateway.MockDataGateway()
     mock.favor_types.append(con.THE_WILD)
     setup_one_mission_base_build(mock, con.ONE_HAS_FAVOR, con.SUPPLY)
-    missions =_generate_base_missions( mock, False, con.ASSAULT, con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT, con.RECON] )
+    missions =_generate_base_missions( mock, False, False, False,  con.ASSAULT, con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT, con.RECON] )
     assert len(missions)==1
     mission = missions[0]
-    check_mission(mission, con.SUPPLY,con.NOTHING,[],[],1, [con.FAVOR_NOTE[0:-3], con.THE_WILD])
-
-
+    check_mission(mission,con.SUPPLY,con.NOTHING,[],[],1,con.required_supply_specialists,[con.FAVOR_NOTE[0:-3], con.THE_WILD])
 
 def test_one_extra_specialist():
     mock = test.mock_data_gateway.MockDataGateway()
     mock.specialists.append(con.SNIPER)
     setup_one_mission_base_build(mock, con.PLUS_ONE_SPECIALIST, con.SUPPLY)
-    missions =_generate_base_missions( mock, False, con.ASSAULT, con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT, con.RECON] )
+    missions =_generate_base_missions( mock, False, False, False,  con.ASSAULT, con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT, con.RECON] )
     mission = missions[0]
-    check_mission(mission, con.SUPPLY, con.NOTHING, [],[], 1, ["Mission can include one additional specialist", con.SNIPER])
+    check_mission(mission, con.SUPPLY, con.NOTHING, [],[], 1, con.required_supply_specialists, ["Mission can include one additional specialist"])
+    check_for_note_plus_one_specialist(mission, con.SNIPER)
 
 
 def test_commanders_focus():
     mock = test.mock_data_gateway.MockDataGateway()    
     setup_one_mission_base_build(mock, con.NOTHING, con.COMMANDER_FOCUS)
-    missions =_generate_base_missions( mock, False, con.RECON, con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT, con.RECON] )
+    missions =_generate_base_missions( mock, False, False, False,  con.RECON, con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT, con.RECON] )
     mission = missions[0]
-    check_mission(mission, con.RECON, con.NOTHING, [],[], 0,[])
+    check_mission(mission, con.RECON, con.NOTHING, [],[], 0,con.required_recon_specialists,[])
     
 
 def test_gm_choice():
     mock = test.mock_data_gateway.MockDataGateway()    
     setup_one_mission_base_build(mock, con.NOTHING, con.GM_CHOICE)
-    missions =_generate_base_missions( mock, False, con.ASSAULT, con.RECON, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT, con.RECON] )
+    missions =_generate_base_missions( mock, False, False, False,  con.ASSAULT, con.RECON, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT, con.RECON] )
     mission = missions[0]
-    check_mission(mission, con.RECON, con.NOTHING, [],[], 0,[])
+    check_mission(mission, con.RECON, con.NOTHING, [],[], 0,con.required_recon_specialists,[])
 
 
 
@@ -112,33 +116,33 @@ def test_unavailable_mission():
     #test simple unavailability
     mock = test.mock_data_gateway.MockDataGateway()    
     setup_one_mission_base_build(mock, con.NOTHING, con.RECON)
-    missions =_generate_base_missions( mock, False, con.ASSAULT, con.RECON, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT] )
+    missions =_generate_base_missions( mock, False, False, False,  con.ASSAULT, con.RECON, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT] )
     mission = missions[0]
-    check_mission(mission, con.RELIGIOUS, con.NOTHING, [],[], 0,[])
+    check_mission(mission, con.RELIGIOUS, con.NOTHING, [],[], 0,con.required_religious_specialists,[])
     #test when mutiple missions unavailable
     setup_one_mission_base_build(mock, con.NOTHING, con.ASSAULT)
-    missions =_generate_base_missions( mock, False, con.UNDEFINED, con.ASSAULT, [] )
+    missions =_generate_base_missions( mock, False, False, False,  con.UNDEFINED, con.ASSAULT, [] )
     mission = missions[0]
-    check_mission(mission, con.UNDEFINED, con.NOTHING, [],[], 0,[])
+    check_mission(mission, con.UNDEFINED, con.NOTHING, [],[], 0,con.NOTHING,[])
 
 def test_special_missions_are_allowed():
     # special
     mock = test.mock_data_gateway.MockDataGateway()    
     setup_one_mission_base_build(mock, con.NOTHING, con.SPECIAL)
-    missions =_generate_base_missions( mock, False, con.ASSAULT, con.ASSAULT, [] )
+    missions =_generate_base_missions( mock, False, False, False, con.ASSAULT, con.ASSAULT, [] )
     mission = missions[0]
-    check_mission(mission, con.SPECIAL, con.NOTHING, [],[], 0,[])
+    check_mission(mission, con.SPECIAL, con.NOTHING, [],[], 0,con.NOTHING,[])
 
 
 def create_mission_with_gm_choice_and_note(mock, choice, note, spymaster_buy=False):
     setup_one_mission_base_build(mock, note, con.GM_CHOICE)
-    missions =_generate_base_missions( mock, spymaster_buy, con.ASSAULT, choice, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT] )
+    missions =_generate_base_missions( mock, spymaster_buy,  False, False,  con.ASSAULT, choice, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT] )
     assert len(missions) == 1
     return missions[0]
 
 def create_mission_with_commander_focus_and_note(mock, focus,note, spymaster_buy=False):
     setup_one_mission_base_build(mock, note, con.COMMANDER_FOCUS)
-    missions =_generate_base_missions( mock, spymaster_buy, focus, con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT] )
+    missions =_generate_base_missions( mock, spymaster_buy,  False, False,  focus, con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT] )
     assert len(missions) == 1
     return missions[0]
 
@@ -202,14 +206,14 @@ def test_gm_choice_one_is_special():
 def test_simple_spymaster_spend():
     mock=test.mock_data_gateway.MockDataGateway()
     setup_one_mission_base_build(mock, con.NOTHING, con.SUPPLY)
-    missions =_generate_base_missions( mock, True, con.ASSAULT,con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT] )
+    missions =_generate_base_missions( mock, True, False, False,  con.ASSAULT,con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT] )
     assert len(missions) == 1
     check_mission_type(missions[0], con.SPECIAL)
     
 def test_one_mission_with_spymaster_and_one_is_special():
     mock=test.mock_data_gateway.MockDataGateway()
     setup_one_mission_base_build(mock, con.ONE_IS_SPECIAL, con.SUPPLY)
-    missions =_generate_base_missions( mock, True, con.ASSAULT,con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT] )
+    missions =_generate_base_missions( mock, True, False, False,  con.ASSAULT,con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT] )
     assert len(missions) == 1
     check_mission_type(missions[0], con.SPECIAL)
     check_note_len(missions[0],0)
@@ -219,7 +223,7 @@ def test_two_missions_with_spymaster_and_one_is_special():
     mock.mission_counts.append((2, con.ONE_IS_SPECIAL))
     mock.mission_types.append(con.RECON)
     mock.mission_types.append(con.SUPPLY)
-    missions =_generate_base_missions( mock, True, con.ASSAULT,con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT] )
+    missions =_generate_base_missions( mock, True, False, False,  con.ASSAULT,con.ASSAULT, [con.RELIGIOUS, con.SUPPLY, con.ASSAULT] )
     assert len(missions) == 2
     check_mission_type(missions[0], con.SPECIAL)
     check_note_len(missions[0],0)
@@ -231,7 +235,7 @@ def setup_three_missions(mock, note, first_type, second_type, third_type, comman
     mock.mission_types.append(first_type)
     mock.mission_types.append(second_type)
     mock.mission_types.append(third_type)
-    missions = _generate_base_missions(mock, spymaster_buy, commanders_focus, gms_choice, [con.ASSAULT, con.RECON, con.SUPPLY, con.RELIGIOUS])
+    missions = _generate_base_missions(mock, spymaster_buy,  False, False,  commanders_focus, gms_choice, [con.ASSAULT, con.RECON, con.SUPPLY, con.RELIGIOUS])
     assert len(missions)==3
     return missions
     

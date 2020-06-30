@@ -32,7 +32,7 @@ def test_simple_assault_mission():
     mock.assault_rewards.append(rewards)
     mock.assault_penalties.append(penalties)
     mock.assault_target_types.append(target_type)
-    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, None, None, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False, mock)
+    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, None, None, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False, False, False,  mock)
     assert len(missions)==1
     mission = missions[0]
     assert len(mission.rewards)==1
@@ -52,7 +52,7 @@ def test_simple_recon_mission():
     mock.recon_rewards.append(rewards)
     mock.recon_penalties.append(penalties)
     mock.recon_target_types.append(target_type)
-    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, con.INFLITRATION, None, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False, mock)
+    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, con.INFLITRATION, None, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False, False, False,  mock)
     assert len(missions)==1
     mission = missions[0]
     assert mission.target == target
@@ -71,7 +71,7 @@ def test_simple_religious_mission():
     mock.religious_rewards.append(rewards)
     mock.religious_penalties.append(penalties)
     mock.religious_cultures.append(con.RELIGIOUS_TARGET_OLD_EMPIRE)
-    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, con.INFLITRATION, con.UNEARTH, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False, mock)
+    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, con.INFLITRATION, con.UNEARTH, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False, False, False,  mock)
     assert len(missions)==1
     mission = missions[0]
     assert mission.target == target
@@ -88,7 +88,7 @@ def test_simple_supply_mission():
     mock.supply_targets.append(target)
     mock.supply_rewards.append(rewards)
     mock.supply_penalties.append(penalties)
-    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, con.INFLITRATION, con.UNEARTH, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False, mock)
+    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, con.INFLITRATION, con.UNEARTH, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False,  False, False, mock)
     assert len(missions)==1
     mission = missions[0]
     assert mission.target == target
@@ -106,7 +106,7 @@ def test_pick_one_plus_danger_for_recon():
     mock.recon_rewards.append(rewards)
     mock.recon_penalties.append(penalties)
     mock.recon_target_types.append(target_type)
-    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, con.INFLITRATION, None, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False, mock)
+    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, con.INFLITRATION, None, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False, False, False,  mock)
     assert len(missions)==1
     mission = missions[0]
     assert mission.target == con.INFLITRATION
@@ -126,7 +126,7 @@ def test_pick_one_plus_favor_for_religious():
     mock.religious_rewards.append(rewards)
     mock.religious_penalties.append(penalties)
     mock.religious_cultures.append(con.RELIGIOUS_TARGET_ALDERMARK)
-    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, con.INFLITRATION, con.UNEARTH, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False, mock)
+    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, con.INFLITRATION, con.UNEARTH, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False,  False, False, mock)
     assert len(missions)==1
     mission = missions[0]
     assert mission.target == con.UNEARTH
@@ -147,5 +147,5 @@ def test_printing():
     mock.recon_rewards.append(rewards)
     mock.recon_penalties.append(penalties)
     mock.recon_target_types.append(target_type)
-    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, con.INFLITRATION, None, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False, mock)
+    missions = generate_missions(con.SUPPLY, con.SUPPLY, con.UNDEAD, con.INFLITRATION, None, con.HOLY, [con.RECON, con.SUPPLY, con.ASSAULT, con.RELIGIOUS], False,  False, False, mock)
     print(missions[0])

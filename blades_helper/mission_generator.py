@@ -10,31 +10,38 @@ def _get_next_mission_type(the_mission_type):
     assert the_mission_type not in [con.COMMANDER_FOCUS, con.GM_CHOICE]
     return con.mission_types[con.mission_types.index(the_mission_type)+1]
 
-def _generate_base_missions(gateway, are_special_mission_acquired_by_spymaster, commanders_focus, gm_mission_type, available_mission_types):
-    special_mission_count=0
+def _generate_base_missions(gateway, are_special_mission_acquired_by_spymaster, trap_laid_by_spymaster, mission_augmented_by_spymaster, commanders_focus, gm_mission_type, available_mission_types):
+    custom_missions = []
     if are_special_mission_acquired_by_spymaster:
-        special_mission_count = special_mission_count+1
+        custom_missions.append(con.SPECIAL)
     count, note = gateway.get_mission_count()
     if(note == con.ONE_IS_SPECIAL):
-        special_mission_count = special_mission_count + 1
+        custom_missions.append(con.SPECIAL)
     the_missions=[]
     for i in range(count):
         the_mission = Mission()
         the_mission.set_mission_title(gateway.get_title())
-        if special_mission_count > 0:
-            the_mission.set_mission_type(con.SPECIAL)
-            special_mission_count=special_mission_count-1
+        if len(custom_missions) >0:
+            the_mission_type = custom_missions.pop()
         else:
             the_mission_type = gateway.get_mission_type()
             while not _can_use_mission_type(the_mission_type, available_mission_types):
                 the_mission_type = _get_next_mission_type(the_mission_type)
 
-            if the_mission_type == con.COMMANDER_FOCUS:
-                the_mission.set_mission_type(commanders_focus)
-            elif the_mission_type == con.GM_CHOICE:
-                the_mission.set_mission_type(gm_mission_type)
-            else:
-                the_mission.set_mission_type(the_mission_type)
+        if the_mission_type == con.AUGMENTED_GM_FOCUS:
+            the_mission_type = con.COMMANDER_FOCUS
+            the_mission.add_note(con.AUGMENTED_GM_FOCUS)
+        elif the_mission_type == con.LAY_TRAP:
+            the_mission_type = con.ASSAULT
+            the_mission.add_note(con.LAY_TRAP)
+
+        if the_mission_type == con.COMMANDER_FOCUS:
+            the_mission.set_mission_type(commanders_focus)
+        elif the_mission_type == con.GM_CHOICE:
+            the_mission.set_mission_type(gm_mission_type)
+        else:
+            the_mission.set_mission_type(the_mission_type)
+
         the_missions.append(the_mission)
     nonspecialist_missions= [mission for mission in the_missions if mission.get_mission_type() != con.SPECIAL].copy()
     if len(nonspecialist_missions)>0:
@@ -55,38 +62,44 @@ def _set_target(mission, selected_target, gm_choice, chosens_favor):
     mission.set_target(the_target)
     return
 
-def _setup_assault_mission(the_mission, gateway, chosens_favor, gm_assault_target):
+def _setup_assault_mission(the_mission, gateway, chosens_favor, gm_assault_target, is_augmented):
     target=gateway.get_assault_target()
     _set_target(the_mission, target, gm_assault_target, chosens_favor)
-    the_mission.set_rewards(gateway.get_assault_rewards())
-    the_mission.set_penalties(gateway.get_assault_penalties())
+    the_mission.set_rewards(gateway.get_assault_rewards(is_augmented))
+    the_mission.set_penalties(gateway.get_assault_penalties(is_augmented))
     the_mission.add_note(gateway.get_assault_target_types())
+    the_mission.add_requirement(con.required_assault_specialists)
 
-def _setup_recon_mission(the_mission, gateway, chosens_favor, gm_recon_target):
+def _setup_recon_mission(the_mission, gateway, chosens_favor, gm_recon_target, is_augmented):
     target = gateway.get_recon_target()
     _set_target(the_mission, target, gm_recon_target, chosens_favor)
-    the_mission.set_rewards(gateway.get_recon_rewards())
-    the_mission.set_penalties(gateway.get_recon_penalties())
+    the_mission.set_rewards(gateway.get_recon_rewards( is_augmented))
+    the_mission.set_penalties(gateway.get_recon_penalties(is_augmented))
     the_mission.add_note(gateway.get_recon_target_types())
+    the_mission.add_requirement(con.required_recon_specialists)
 
-def _setup_religious_mission(the_mission, gateway, chosens_favor, gm_religious_target):
+def _setup_religious_mission(the_mission, gateway, chosens_favor, gm_religious_target, is_augmented):
     target = gateway.get_religious_target()
     _set_target(the_mission, target, gm_religious_target, chosens_favor)
-    the_mission.set_rewards(gateway.get_religious_rewards())
-    the_mission.set_penalties(gateway.get_religious_penalties())
+    the_mission.set_rewards(gateway.get_religious_rewards( is_augmented))
+    the_mission.set_penalties(gateway.get_religious_penalties(is_augmented))
     the_mission.add_note(con.CULTURE_USE_NOTE.format(gateway.get_religious_culture()))
+    the_mission.add_requirement(con.required_religious_specialists)
 
-def _setup_supply_mission(the_mission, gateway, chosens_favor):
+def _setup_supply_mission(the_mission, gateway, chosens_favor, is_augmented):
     target = gateway.get_supply_target()
     _set_target(the_mission, target, con.NOTHING, chosens_favor)
-    the_mission.set_rewards(gateway.get_supply_rewards())
-    the_mission.set_penalties(gateway.get_supply_penalties())
+    the_mission.set_rewards(gateway.get_supply_rewards(is_augmented))
+    the_mission.set_penalties(gateway.get_supply_penalties(is_augmented))
+    the_mission.add_requirement(con.required_supply_specialists)
 
-#def _setup_none_value(input, random_values):
-#    if input == None or input == con.NOTHING:
-#        return random.choice(random_values)
+def check_if_mission_is_augmented(mission):
+    if con.AUGMENTED_GM_FOCUS in mission.notes:
+        #mission.notes.remove(con.AUGMENTED_GM_FOCUS)  #leave note in so that gm sees that it i augmented
+        return True
+    return False
 
-def generate_missions(commanders_focus, gm_mission_type, gm_assault_target, gm_recon_target, gm_religious_target, chosens_favor, available_mission_types, special_mission_acquired_by_spymaster, gateway=None):
+def generate_missions(commanders_focus, gm_mission_type, gm_assault_target, gm_recon_target, gm_religious_target, chosens_favor, available_mission_types, special_mission_acquired_by_spymaster, trap_laid_by_spymaster, mission_augmented_by_spymaster, gateway=None):
     if gateway == None or gateway == con.NOTHING:
         gateway = DataGateway()
     if gm_mission_type == con.NOTHING or gm_mission_type==None:
@@ -98,14 +111,15 @@ def generate_missions(commanders_focus, gm_mission_type, gm_assault_target, gm_r
     if gm_religious_target == con.NOTHING or gm_religious_target==None:
         gm_religious_target = gateway.get_simple_religious_target()
     
-    missions = _generate_base_missions(gateway, special_mission_acquired_by_spymaster, commanders_focus, gm_mission_type, available_mission_types)
+    missions = _generate_base_missions(gateway, special_mission_acquired_by_spymaster, trap_laid_by_spymaster, mission_augmented_by_spymaster, commanders_focus, gm_mission_type, available_mission_types)
     for mission in missions:
+        is_augmented = check_if_mission_is_augmented(mission)
         if mission.get_mission_type() == con.ASSAULT:
-            _setup_assault_mission(mission, gateway, chosens_favor, gm_assault_target)
+            _setup_assault_mission(mission, gateway, chosens_favor, gm_assault_target, is_augmented)
         elif mission.get_mission_type() == con.RECON:
-            _setup_recon_mission(mission, gateway, chosens_favor, gm_recon_target)
+            _setup_recon_mission(mission, gateway, chosens_favor, gm_recon_target, is_augmented)
         elif mission.get_mission_type() == con.RELIGIOUS:
-            _setup_religious_mission(mission, gateway, chosens_favor, gm_religious_target)
+            _setup_religious_mission(mission, gateway, chosens_favor, gm_religious_target, is_augmented)
         elif mission.get_mission_type() == con.SUPPLY:
-            _setup_supply_mission(mission, gateway, chosens_favor)
+            _setup_supply_mission(mission, gateway, chosens_favor, is_augmented)
     return missions 

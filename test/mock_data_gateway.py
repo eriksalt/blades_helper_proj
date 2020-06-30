@@ -96,18 +96,18 @@ class MockDataGateway(DataGateway):
         else:
             return super().get_simple_religious_target() 
 
-    def get_assault_rewards(self):
+    def get_assault_rewards(self, is_augmented):
         if len(self.assault_rewards) > 0:
             return self.assault_rewards.pop(0)
         else:
-            return super().get_assault_rewards()
+            return super().get_assault_rewards(is_augmented)
 
 
-    def get_assault_penalties(self):
+    def get_assault_penalties(self, is_augmented):
         if len(self.assault_penalties) > 0:
             return self.assault_penalties.pop(0)
         else:
-            return super().get_assault_penalties()
+            return super().get_assault_penalties(is_augmented)
 
 
     def get_assault_target_types(self):
@@ -124,18 +124,18 @@ class MockDataGateway(DataGateway):
             return super().get_recon_target()
 
 
-    def get_recon_rewards(self):
+    def get_recon_rewards(self, is_augmented):
         if len(self.recon_rewards) > 0:
             return self.recon_rewards.pop(0)
         else:
-            return super().get_recon_rewards()
+            return super().get_recon_rewards(is_augmented)
 
 
-    def get_recon_penalties(self):
+    def get_recon_penalties(self, is_augmented):
         if len(self.recon_penalties) > 0:
             return self.recon_penalties.pop(0)
         else:
-            return super().get_recon_penalties()
+            return super().get_recon_penalties(is_augmented)
 
 
     def get_recon_target_types(self):
@@ -151,18 +151,18 @@ class MockDataGateway(DataGateway):
         else:
             return super().get_religious_target()
 
-    def get_religious_rewards(self):
+    def get_religious_rewards(self, is_augmented):
         if len(self.religious_rewards) > 0:
             return self.religious_rewards.pop(0)
         else:
-            return super().get_religious_rewards()
+            return super().get_religious_rewards(is_augmented)
 
 
-    def get_religious_penalties(self):
+    def get_religious_penalties(self, is_augmented):
         if len(self.religious_penalties) > 0:
             return self.religious_penalties.pop(0)
         else:
-            return super().get_religious_penalties()
+            return super().get_religious_penalties(is_augmented)
 
 
     def get_supply_target(self):
@@ -172,18 +172,18 @@ class MockDataGateway(DataGateway):
             return super().get_supply_target()
 
 
-    def get_supply_rewards(self):
+    def get_supply_rewards(self, is_augmented):
         if len(self.supply_rewards) > 0:
             return self.supply_rewards.pop(0)
         else:
-            return super().get_supply_rewards()
+            return super().get_supply_rewards(is_augmented)
 
 
-    def get_supply_penalties(self):
+    def get_supply_penalties(self, is_augmented):
         if len(self.supply_penalties) > 0:
             return self.supply_penalties.pop(0)
         else:
-            return super().get_supply_penalties()
+            return super().get_supply_penalties(is_augmented)
 
     
     def get_religious_culture(self):

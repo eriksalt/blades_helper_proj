@@ -8,6 +8,7 @@ class Mission:
         self.rewards=[]
         self.penalties=[]
         self.notes=[]
+        self.requirements=[]
 
     def set_mission_type(self, mission_type):
         self.mission_type=mission_type
@@ -26,7 +27,11 @@ class Mission:
         self.add_note(con.HAS_DANGER_NOTE)
     
     def set_additional_specialist(self, specialist):
-        self.add_note(con.ADDITIONAL_SPECIALIST_NOTE.format(specialist))
+        self.add_note(con.ADDITIONAL_SPECIALIST_NOTE)
+        self.add_requirement(specialist)
+
+    def add_requirement(self, specialist):
+        self.requirements.append(specialist)
     
     def set_target(self, target):
         self.target=target
@@ -51,6 +56,9 @@ class Mission:
         strings.append('\tPenalties:')
         for penalty_count, penalty_type in self.penalties:
             strings.append(f'\t\t Type: {penalty_type}. Count: {penalty_count}.')
+        strings.append('\tRequirements:')
+        for requirement in self.requirements:
+            strings.append(f'\t\t {requirement}.')  
         if len(self.notes) > 0:
             strings.append('\tNotes:')
             for note in self.notes:

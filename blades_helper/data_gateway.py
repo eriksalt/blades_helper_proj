@@ -34,11 +34,11 @@ class DataGateway:
     def get_simple_religious_target(self):
         return random.choice(con.religious_targets[0:3])
 
-    def get_assault_rewards(self):
-        return random.choice(con.assault_rewards)
+    def get_assault_rewards(self, is_augmented):
+        return self.get_choice_with_possible_augmentation(is_augmented, con.assault_rewards)
 
-    def get_assault_penalties(self):
-        return random.choice(con.assault_penalties)
+    def get_assault_penalties(self, is_augmented):
+        return self.get_choice_with_possible_augmentation(is_augmented, con.assault_penalties)
 
     def get_assault_target_types(self):
         return random.choice(con.assault_target_types)
@@ -46,11 +46,11 @@ class DataGateway:
     def get_recon_target(self):
         return random.choice(con.recon_targets)
 
-    def get_recon_rewards(self):
-        return random.choice(con.recon_rewards)
+    def get_recon_rewards(self, is_augmented):
+        return self.get_choice_with_possible_augmentation(is_augmented, con.recon_rewards)
 
-    def get_recon_penalties(self):
-        return random.choice(con.recon_penalties)
+    def get_recon_penalties(self, is_augmented):
+        return self.get_choice_with_possible_augmentation(is_augmented, con.recon_penalties)
 
     def get_recon_target_types(self):
         return random.choice(con.recon_target_types)
@@ -58,23 +58,30 @@ class DataGateway:
     def get_religious_target(self):
         return random.choice(con.religious_targets)
 
-    def get_religious_rewards(self):
-        return random.choice(con.religious_rewards)
+    def get_religious_rewards(self, is_augmented):
+        return self.get_choice_with_possible_augmentation(is_augmented, con.religious_rewards)
 
-    def get_religious_penalties(self):
-        return random.choice(con.religious_penalties)
+    def get_religious_penalties(self, is_augmented):
+        return self.get_choice_with_possible_augmentation(is_augmented, con.religious_penalties)
 
     def get_supply_target(self):
         return random.choice(con.supply_targets)
 
-    def get_supply_rewards(self):
-        return random.choice(con.recon_rewards)
+    def get_supply_rewards(self, is_augmented):
+        return self.get_choice_with_possible_augmentation(is_augmented, con.supply_rewards)
 
-    def get_supply_penalties(self):
-        return random.choice(con.supply_penalties)
+    def get_supply_penalties(self, is_augmented):
+        return self.get_choice_with_possible_augmentation(is_augmented, con.supply_penalties)
     
     def get_religious_culture(self):
         return random.choice(random.choice(con.religious_cultures))
 
     def get_title(self):
         return f'{random.choice(con.mission_first_names)} {random.choice(con.mission_second_names)}'
+
+    def get_choice_with_possible_augmentation(self, is_augmented, choices):
+        maxid=len(choices)-1
+        choice_id = random.randint(0, maxid)
+        if is_augmented:
+            choice_id = min (maxid, choice_id+1)
+        return choices[choice_id]
