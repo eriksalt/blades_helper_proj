@@ -1,0 +1,82 @@
+var_name,var_value
+SPECIAL,Special
+UNDEFINED,UNDEFINED
+PRESSURE,Pressure
+MORALE,Morale
+INTEL,Intel
+TIME,Time
+ASSAULT,Assault
+RECON,Recon
+RELIGIOUS,Religious
+SUPPLY,"Supply"
+ASSET_OR_TROOPS,Asset or Troops
+ASSET,Asset
+COMMANDER_FOCUS,Commander Focus
+GM_CHOICE,GMs choice
+PEOPLE,People
+THE_WILD,The Wild
+UNDEAD,Undead
+POWERFUL_UNDEAD,Powerful Undead
+AREA_RECON,Area Recon
+ROUTE_RECON,Route Recon
+TROOP_RECON,Troop Recon
+INFLITRATION,Infiltration
+EXFILTRATION,Exfiltration
+PICK_ONE_PLUS_DANGER,Pick one plus danger
+NOTHING,
+ONE_HAS_FAVOR,one has favor
+PLUS_ONE_SPECIALIST,one has +1 specialist
+ONE_IS_SPECIAL,one special mission
+HOLY,Holy
+MYSTIC,Mystic
+GLORY,Glory
+KNOWLEDGE,Knowledge 
+MERCY,Mercy
+WILD,Wild
+HEAVY,Heavy
+MEDIC,Medic
+SCOUT,Scout
+SNIPER,Sniper
+OFFICER,Officer
+ALCHEMIST_OR_MERCY,Alchemist or Mercy
+DEATHS,Death(s)
+NONE,None
+ESCORT,Escort
+CLEANSING,Cleansing
+DEFENSE,Defense
+UNEARTH,Unearth
+PICK_ONE_WITH_FAVOR,Pick one with Favor
+XP,xp
+SCORE_POINTS,Score points
+FINE_ASSET,Fine Asset
+EXCEPTIONAL_ASSET,Exceptional Asset
+SPECIALIST,Specialist
+SCROUNGE_OR_TRADE,Scrounge or Trade
+RESCUE_SUPPLIES,Rescue Supplies
+MERCENARY_WORK,Mercenary Work
+ASSET_OR_TROOPS,Asset or Troops
+ASSAULT_TARGET_IS_CHALLENGE,Your target may be a challenge that needs to be overcome
+ASSAULT_TARGET_IS_OBJECTIVE,Your target may be an objective which you need to engage in conflict to achieve
+RECON_TARGET_IS_OBSERVE,It may be that your information can be gained by observing something or someone
+RECON_TARGET_IS_STEAL,It may be that your information can be gained by stealing something or someone
+RECON_TARGET_IS_CONSULT,It may be that your information can be gained by consulting local sources with vital intelligence
+RELIGIOUS_TARGET_ALDERMARK,Aldermark
+RELIGIOUS_TARGET_BARTA,Barta
+RELIGIOUS_TARGET_OR,Or
+RELIGIOUS_TARGET_DAR,Dar
+RELIGIOUS_TARGET_OLD_EMPIRE,the Old Empire
+RELIGIOUS_TARGET_PANYA,Panya
+RELIGIOUS_TARGET_ZEMYA,Zemya
+RELIGIOUS_TARGET_ROYIN,Royin
+RELIGIOUS_TARGET_BONE_WASTES,the Bone Wastes
+RELIGIOUS_TARGET_ANDRASTUS,the Principalities of Andrastus
+LAY_TRAP,This mission represents the spymaster springing a trap for a lieutenant or infamous of a Broken
+AUGMENTED_GM_FOCUS,The spymaster has augmented this mission
+FAVOR_NOTE,Mission has favor of type {}
+HAS_DANGER_NOTE,Mission is especially dangerous.  Consider adding a lieutenant or elite
+ADDITIONAL_SPECIALIST_NOTE,Mission can include one additional specialist
+CULTURE_USE_NOTE,Consider setting in the context of {}
+required_assault_specialists,One Heavy or Medic or Sniper
+required_supply_specialists,One Heavy or Officer or Scout
+required_recon_specialists,One Scout or Sniper
+required_religious_specialists,One Officer or Medic

@@ -1,3 +1,5 @@
+from blades_helper.generate_missions import chosens_favor, gm_assault_target, gm_recon_target, gm_religious_target
+from typing import get_args
 from blades_helper.mission_generator_constants import MissionGeneratorConstants as con
 from blades_helper.mission import Mission
 from blades_helper.data_gateway import DataGateway
@@ -14,6 +16,11 @@ def _generate_base_missions(gateway, are_special_mission_acquired_by_spymaster, 
     custom_missions = []
     if are_special_mission_acquired_by_spymaster:
         custom_missions.append(con.SPECIAL)
+    if trap_laid_by_spymaster:
+        custom_missions.append(con.LAY_TRAP)
+    if mission_augmented_by_spymaster:
+        custom_missions.append(con.AUGMENTED_GM_FOCUS)
+
     count, note = gateway.get_mission_count()
     if(note == con.ONE_IS_SPECIAL):
         custom_missions.append(con.SPECIAL)
@@ -67,8 +74,10 @@ def _setup_assault_mission(the_mission, gateway, chosens_favor, gm_assault_targe
     _set_target(the_mission, target, gm_assault_target, chosens_favor)
     the_mission.set_rewards(gateway.get_assault_rewards(is_augmented))
     the_mission.set_penalties(gateway.get_assault_penalties(is_augmented))
-    the_mission.add_note(gateway.get_assault_target_types())
+    if not con.LAY_TRAP in the_mission.notes:
+        the_mission.add_note(gateway.get_assault_target_types())
     the_mission.add_requirement(con.required_assault_specialists)
+    the_mission.add_objective(gateway.get_assault_objective())
 
 def _setup_recon_mission(the_mission, gateway, chosens_favor, gm_recon_target, is_augmented):
     target = gateway.get_recon_target()
@@ -77,6 +86,7 @@ def _setup_recon_mission(the_mission, gateway, chosens_favor, gm_recon_target, i
     the_mission.set_penalties(gateway.get_recon_penalties(is_augmented))
     the_mission.add_note(gateway.get_recon_target_types())
     the_mission.add_requirement(con.required_recon_specialists)
+    the_mission.add_objective(gateway.get_recon_objective())
 
 def _setup_religious_mission(the_mission, gateway, chosens_favor, gm_religious_target, is_augmented):
     target = gateway.get_religious_target()
@@ -85,6 +95,7 @@ def _setup_religious_mission(the_mission, gateway, chosens_favor, gm_religious_t
     the_mission.set_penalties(gateway.get_religious_penalties(is_augmented))
     the_mission.add_note(con.CULTURE_USE_NOTE.format(gateway.get_religious_culture()))
     the_mission.add_requirement(con.required_religious_specialists)
+    the_mission.add_objective(gateway.get_religious_objective())
 
 def _setup_supply_mission(the_mission, gateway, chosens_favor, is_augmented):
     target = gateway.get_supply_target()
@@ -92,12 +103,26 @@ def _setup_supply_mission(the_mission, gateway, chosens_favor, is_augmented):
     the_mission.set_rewards(gateway.get_supply_rewards(is_augmented))
     the_mission.set_penalties(gateway.get_supply_penalties(is_augmented))
     the_mission.add_requirement(con.required_supply_specialists)
+    the_mission.add_objective(gateway.get_supply_objective())
+    the_mission.add_note(f'Supply Problem: {gateway.get_supply_problem()}')
+    the_mission.add_note(f'Supply Type: {gateway.get_supply_type()}')
 
 def check_if_mission_is_augmented(mission):
     if con.AUGMENTED_GM_FOCUS in mission.notes:
         #mission.notes.remove(con.AUGMENTED_GM_FOCUS)  #leave note in so that gm sees that it i augmented
         return True
     return False
+
+def configure_mission(mission, chosens_favor, gm_assault_target, gm_recon_target, gm_religious_target, gateway):
+    is_augmented = check_if_mission_is_augmented(mission)
+    if mission.get_mission_type() == con.ASSAULT:
+        _setup_assault_mission(mission, gateway, chosens_favor, gm_assault_target, is_augmented)
+    elif mission.get_mission_type() == con.RECON:
+        _setup_recon_mission(mission, gateway, chosens_favor, gm_recon_target, is_augmented)
+    elif mission.get_mission_type() == con.RELIGIOUS:
+        _setup_religious_mission(mission, gateway, chosens_favor, gm_religious_target, is_augmented)
+    elif mission.get_mission_type() == con.SUPPLY:
+        _setup_supply_mission(mission, gateway, chosens_favor, is_augmented)
 
 def generate_missions(commanders_focus, gm_mission_type, gm_assault_target, gm_recon_target, gm_religious_target, chosens_favor, available_mission_types, special_mission_acquired_by_spymaster, trap_laid_by_spymaster, mission_augmented_by_spymaster, gateway=None):
     if gateway == None or gateway == con.NOTHING:
@@ -113,13 +138,5 @@ def generate_missions(commanders_focus, gm_mission_type, gm_assault_target, gm_r
     
     missions = _generate_base_missions(gateway, special_mission_acquired_by_spymaster, trap_laid_by_spymaster, mission_augmented_by_spymaster, commanders_focus, gm_mission_type, available_mission_types)
     for mission in missions:
-        is_augmented = check_if_mission_is_augmented(mission)
-        if mission.get_mission_type() == con.ASSAULT:
-            _setup_assault_mission(mission, gateway, chosens_favor, gm_assault_target, is_augmented)
-        elif mission.get_mission_type() == con.RECON:
-            _setup_recon_mission(mission, gateway, chosens_favor, gm_recon_target, is_augmented)
-        elif mission.get_mission_type() == con.RELIGIOUS:
-            _setup_religious_mission(mission, gateway, chosens_favor, gm_religious_target, is_augmented)
-        elif mission.get_mission_type() == con.SUPPLY:
-            _setup_supply_mission(mission, gateway, chosens_favor, is_augmented)
+        configure_mission(mission, chosens_favor,gm_assault_target, gm_recon_target, gm_religious_target, gateway)
     return missions 

@@ -283,3 +283,5 @@ def test_three_missions_with_spymaster_buy_and_one_is_special():
     check_mission_type(missions[0], con.SPECIAL)
     check_mission_type(missions[1], con.SPECIAL)
     check_mission_type(missions[2], con.RELIGIOUS)
+
+

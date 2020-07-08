@@ -1,0 +1,6 @@
+    {%for key in keys%}{{key}} = '{{key}}'
+    {% endfor %}
+
+    {{variable_name}} = { {%for key in keys%}
+        '{{key}}': {{objectives[key]}},{% endfor %}
+    }

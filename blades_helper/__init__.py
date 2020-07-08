@@ -1,3 +1,2 @@
 from blades_helper.mission_generator_constants import MissionGeneratorConstants
 from blades_helper.mission import Mission
-from blades_helper.mission_generator import generate_missions

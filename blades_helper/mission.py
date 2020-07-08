@@ -42,6 +42,9 @@ class Mission:
     def set_penalties(self, penalties):
         self.penalties=penalties
 
+    def add_objective(self, objective):
+        self.notes.append(f'Military Objective: {objective["key"]}. {objective["description"]} Examples: {objective["example"]}')
+
     def add_note(self, note):
         self.notes.append(note)
     
