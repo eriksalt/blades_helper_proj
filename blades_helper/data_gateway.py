@@ -1,5 +1,5 @@
 import random
-from blades_helper.mission_generator_constants import MissionGeneratorConstants as con
+from .mission_generator_constants import MissionGeneratorConstants as con
 
 class DataGateway:
     def __init__(self):

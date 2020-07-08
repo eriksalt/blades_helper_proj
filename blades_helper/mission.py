@@ -1,4 +1,4 @@
-from blades_helper.mission_generator_constants import MissionGeneratorConstants as con
+from .mission_generator_constants import MissionGeneratorConstants as con
 
 class Mission:
     def __init__(self):
@@ -66,4 +66,4 @@ class Mission:
             strings.append('\tNotes:')
             for note in self.notes:
                 strings.append(f'\t\t{note}.') 
-        return '\r\n'.join(strings)
+        return '\r'.join(strings)
